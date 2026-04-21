@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block title %}Successful Login - Congratulations!{% endblock %}
+
+{% block content %}
+<div class="success-container">
+    <div class="success-card">
+        <div class="success-icon">
+            ✓
+        </div>
+        <h1 class="success-title">Congratulations!</h1>
+        <p class="success-subtitle">You have successfully logged in.</p>
+        
+        <div class="user-badge">
+            Welcome back, {{ current_user.username }}
+        </div>
+
+        <div class="success-actions">
+            <a href="{{ url_for('auth.dashboard') }}" class="btn btn-primary">Go to Dashboard</a>
+            <a href="{{ url_for('auth.logout') }}" class="btn btn-secondary">Logout</a>
+        </div>
+    </div>
+</div>
+
+<!-- Load canvas-confetti from CDN -->
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Trigger confetti celebration
+        const duration = 5 * 1000;
+        const animationEnd = Date.now() + duration;
+        const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
+
+        function randomInRange(min, max) {
+            return Math.random() * (max - min) + min;
+        }
+
+        const interval = setInterval(function() {
+            const timeLeft = animationEnd - Date.now();
+
+            if (timeLeft <= 0) {
+                return clearInterval(interval);
+            }
+
+            const particleCount = 50 * (timeLeft / duration);
+            // since particles fall down, start a bit higher than random
+            confetti(Object.assign({}, defaults, { 
+                particleCount, 
+                origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } 
+            }));
+            confetti(Object.assign({}, defaults, { 
+                particleCount, 
+                origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } 
+            }));
+        }, 250);
+
+        // One big burst at the center too
+        confetti({
+            particleCount: 150,
+            spread: 70,
+            origin: { y: 0.6 }
+        });
+    });
+</script>
+{% endblock %}
