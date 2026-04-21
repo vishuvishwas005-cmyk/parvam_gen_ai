@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact - Data Science Workshop</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; }
+        h1 { color: #333; }
+        .section { margin-bottom: 30px; }
+        form { max-width: 400px; }
+        label { display: block; margin-top: 10px; }
+        input, textarea { width: 100%; padding: 8px; margin-top: 5px; }
+        button { margin-top: 15px; padding: 10px 20px; background: #007bff; color: white; border: none; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h1>Contact Us</h1>
+
+    <div class="section">
+        <h2>Get In Touch</h2>
+        <p>Have questions about the workshop? Send us a message!</p>
+
+        <form action="/contact" method="post">
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" required>
+
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+
+            <label for="message">Message:</label>
+            <textarea id="message" name="message" rows="5" required></textarea>
+
+            <button type="submit">Send Message</button>
+        </form>
+    </div>
+
+    <div class="section">
+        <h2>Contact Information</h2>
+        <p>Email: workshop@example.com</p>
+        <p>Phone: (123) 456-7890</p>
+    </div>
+
+    <div class="section">
+        <a href="/">Home</a> | <a href="/about">About</a>
+    </div>
+</body>
+</html>

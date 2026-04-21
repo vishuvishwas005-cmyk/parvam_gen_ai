@@ -1,0 +1,32 @@
+Sample Prompts for AI Models
+===========================
+
+1. Code Generation Prompt:
+"Write a Python function that calculates the factorial of a number using recursion."
+
+2. Data Analysis Prompt:
+"Analyze this dataset and provide insights about the trends and patterns you observe."
+
+3. Creative Writing Prompt:
+"Write a short story about a robot who falls in love with a human."
+
+4. Technical Explanation Prompt:
+"Explain how machine learning algorithms work in simple terms that a beginner can understand."
+
+5. Problem Solving Prompt:
+"You have a list of numbers and need to find the two numbers that add up to a target sum. Write an efficient algorithm."
+
+6. Code Review Prompt:
+"Review this code snippet and suggest improvements for performance and readability."
+
+7. Documentation Prompt:
+"Write comprehensive documentation for this API endpoint including parameters, responses, and examples."
+
+8. Debugging Prompt:
+"This code is throwing an error. Help me identify and fix the issue."
+
+9. Design Prompt:
+"Design a user interface for a task management application with the following features: create tasks, assign priorities, set due dates."
+
+10. Testing Prompt:
+"Write unit tests for this function covering edge cases and error conditions."

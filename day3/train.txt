@@ -1,0 +1,34 @@
+Advanced Training Data
+====================
+
+Model: GPT-4
+Training Objective: Improve code generation and explanation capabilities
+
+Dataset Composition:
+- Code snippets: 40%
+- Technical explanations: 30%
+- Problem-solving scenarios: 20%
+- Creative tasks: 10%
+
+Key Training Examples:
+
+1. Code Generation:
+Input: "Write a function to reverse a string in Python"
+Expected Output: Complete function with comments
+
+2. Bug Fixing:
+Input: "This code has a bug: def add(a,b): return a+b"
+Expected Output: Identify and fix the syntax error
+
+3. Algorithm Explanation:
+Input: "Explain how binary search works"
+Expected Output: Step-by-step explanation with example
+
+4. API Design:
+Input: "Design a REST API for a blog system"
+Expected Output: Endpoints, methods, and data structures
+
+Training Metrics:
+- Accuracy: 95%
+- Response time: <2 seconds
+- Code correctness: 90%

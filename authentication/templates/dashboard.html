@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Authentication System{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <div class="container">
+        <h1>Welcome, {{ current_user.username }}!</h1>
+        <div class="dashboard-content">
+            <div class="dashboard-card">
+                <h3>Account Information</h3>
+                <p><strong>Email:</strong> {{ current_user.email }}</p>
+                <p><strong>Username:</strong> {{ current_user.username }}</p>
+            </div>
+            <div class="dashboard-card">
+                <h3>Quick Actions</h3>
+                <a href="{{ url_for('auth.logout') }}" class="btn btn-secondary">Logout</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

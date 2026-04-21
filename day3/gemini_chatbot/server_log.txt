@@ -1,0 +1,8 @@
+Gemini Chatbot Server Log
+========================
+
+Server started at: 2024-12-21 10:00:00
+API Key configured: No
+Demo mode: Enabled
+
+Conversations will be logged here...

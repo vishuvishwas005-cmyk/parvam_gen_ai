@@ -1,0 +1,30 @@
+Student Submissions Report
+========================
+
+Student ID: 001
+Name: Alice Johnson
+Assignment: Python Basics
+Status: Submitted
+Grade: A
+Comments: Excellent work on variables and loops
+
+Student ID: 002
+Name: Bob Smith
+Assignment: Python Basics
+Status: Submitted
+Grade: B+
+Comments: Good understanding of concepts, needs improvement in comments
+
+Student ID: 003
+Name: Charlie Brown
+Assignment: Python Basics
+Status: Pending
+Grade: N/A
+Comments: Late submission expected
+
+Student ID: 004
+Name: Diana Prince
+Assignment: Data Structures
+Status: Submitted
+Grade: A-
+Comments: Strong grasp of lists and dictionaries

@@ -1,0 +1,43 @@
+Available Gemini Models
+======================
+
+1. gemini-pro
+   - Text-only model
+   - Optimized for natural language tasks
+   - Max tokens: 32,768
+
+2. gemini-pro-vision
+   - Multimodal model (text + images)
+   - Can analyze images and answer questions about them
+   - Max tokens: 16,384
+
+3. gemini-1.5-pro
+   - Latest pro model
+   - Improved performance and capabilities
+   - Context window: 1 million tokens
+   - Supports function calling
+
+4. gemini-1.5-flash
+   - Fast and efficient model
+   - Lower latency than pro models
+   - Good for real-time applications
+   - Context window: 1 million tokens
+
+5. gemini-1.0-pro
+   - Previous generation pro model
+   - Still available for compatibility
+   - Max tokens: 32,768
+
+Model Capabilities:
+- Text generation
+- Code generation
+- Analysis and reasoning
+- Creative writing
+- Question answering
+- Translation
+- Summarization
+
+Pricing (as of 2024):
+- gemini-pro: $0.00025 per 1K characters
+- gemini-1.5-pro: $0.00125 per 1K characters
+- gemini-1.5-flash: $0.000075 per 1K characters
