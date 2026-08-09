@@ -1,0 +1,362 @@
+:root {
+    --bg-color: #0a0a0a;
+    --text-color: #ffffff;
+    --accent-color: #3e92cc;
+    --font-main: 'Outfit', sans-serif;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: var(--font-main);
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* Loader Styles */
+.loader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    transition: opacity 0.8s cubic-bezier(0.77, 0, 0.175, 1);
+}
+
+.loader-content {
+    text-align: center;
+    width: 300px;
+}
+
+.loader-title {
+    font-weight: 300;
+    font-size: 1.5rem;
+    letter-spacing: 0.2rem;
+    margin-bottom: 2rem;
+    text-transform: uppercase;
+}
+
+.progress-bar-container {
+    width: 100%;
+    height: 2px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 1rem;
+}
+
+.progress-bar {
+    width: 0%;
+    height: 100%;
+    background: var(--text-color);
+    transition: width 0.3s ease-out;
+}
+
+.loading-text {
+    font-size: 0.8rem;
+    opacity: 0.5;
+    letter-spacing: 0.1rem;
+}
+
+/* Scene Container */
+#main-container {
+    position: relative;
+    width: 100%;
+}
+
+.scene-section {
+    position: relative;
+    height: 100vh;
+    width: 100%;
+    overflow: hidden;
+}
+
+.canvas-wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    z-index: 1;
+}
+
+canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* This will be handled in JS for aspect ratio */
+}
+
+/* Scroll Spacer */
+.scroll-spacer {
+    height: 500vh; /* Adjust this to change how long the scroll lasts */
+    position: relative;
+    z-index: 0;
+}
+
+/* Content Overlay */
+.content-overlay {
+    position: fixed;
+    bottom: 5vh;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+    text-align: center;
+    pointer-events: none;
+}
+
+.scroll-indicator {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    opacity: 0.8;
+}
+
+.scroll-indicator p {
+    font-size: 0.7rem;
+    letter-spacing: 0.3rem;
+    margin-bottom: 1rem;
+    font-weight: 300;
+}
+
+.mouse {
+    width: 25px;
+    height: 40px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 12px;
+    position: relative;
+}
+
+.mouse::after {
+    content: '';
+    position: absolute;
+    top: 8px;
+    left: 50%;
+    width: 3px;
+    height: 6px;
+    background: white;
+    transform: translateX(-50%);
+    border-radius: 2px;
+    animation: scroll-wheel 1.5s infinite;
+}
+
+@keyframes scroll-wheel {
+    0% { opacity: 1; transform: translate(-50%, 0); }
+    100% { opacity: 0; transform: translate(-50%, 15px); }
+}
+
+/* Footer Section */
+.footer-section {
+    position: relative;
+    height: 100vh;
+    background: #000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 20; /* Above the canvas */
+}
+
+.footer-content {
+    text-align: center;
+    max-width: 600px;
+}
+
+.footer-content h2 {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    background: linear-gradient(to right, #fff, #888);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.footer-content p {
+    opacity: 0.6;
+    line-height: 1.6;
+}
+
+.slide-up {
+    opacity: 0;
+    transform: translateY(50px);
+}
+
+/* Utilities */
+.hidden {
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+}
+
+/* Navigation Styles */
+.main-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 30px 60px;
+    z-index: 1000;
+    background: transparent; /* Removed backdrop-filter and background */
+    border-bottom: none;
+    transition: all 0.5s cubic-bezier(0.77, 0, 0.175, 1);
+}
+
+.header-container {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    max-width: 1400px;
+    margin: 0 auto;
+    position: relative;
+}
+
+.logo-group {
+    position: absolute;
+    left: 65%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.brand-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem;
+    font-weight: 600;
+    letter-spacing: 6px;
+    color: #fff;
+    text-decoration: none;
+    line-height: 1;
+    margin-bottom: 5px;
+}
+
+.brand-tagline {
+    font-size: 0.6rem;
+    letter-spacing: 3px;
+    color: rgba(255, 255, 255, 0.4);
+    font-weight: 300;
+    text-transform: uppercase;
+}
+
+.desktop-nav {
+    display: flex;
+    gap: 40px;
+    align-items: center;
+}
+
+.desktop-nav a {
+    color: rgba(255, 255, 255, 0.6);
+    text-decoration: none;
+    font-size: 0.8rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    transition: color 0.3s;
+}
+
+.desktop-nav a:hover {
+    color: #fff;
+}
+
+.btn-login-header {
+    padding: 10px 25px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50px;
+}
+
+/* Background Overlay for Fade to Black */
+.bg-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background: #000;
+    z-index: 5;
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* Storytelling Layers */
+.story-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    max-width: 800px;
+    text-align: center;
+}
+
+.story-chapter {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    opacity: 0; /* Animated via GSAP */
+    pointer-events: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.chapter-num {
+    font-size: 0.8rem;
+    letter-spacing: 5px;
+    color: #1a1a1a; /* Deep charcoal for visibility */
+    margin-bottom: 20px;
+    font-weight: 600;
+    text-shadow: 0 0 15px rgba(255,255,255,0.8);
+}
+
+.chapter-title {
+    font-size: 3.5rem;
+    font-weight: 600;
+    margin-bottom: 20px;
+    letter-spacing: 1px;
+    color: #1a1a1a; /* Deep charcoal */
+    text-shadow: 0 0 25px rgba(255,255,255,0.9), 0 0 5px rgba(255,255,255,1);
+}
+
+.chapter-desc {
+    font-size: 1.1rem;
+    max-width: 480px;
+    line-height: 1.6;
+    color: #2a2a2a; /* Deep charcoal */
+    font-weight: 400;
+    text-shadow: 0 0 20px rgba(255,255,255,0.8);
+}
+
+/* Utilities & Existing Fixes */
+.hidden {
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+}
+
+.btn-get-started {
+    text-decoration: none;
+    color: #000;
+    background: #fff;
+    font-size: 1rem;
+    letter-spacing: 2px;
+    padding: 15px 40px;
+    border-radius: 50px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    display: inline-block;
+}
+
+.btn-get-started:hover {
+    transform: scale(1.05);
+    box-shadow: 0 10px 30px rgba(255, 255, 255, 0.2);
+}

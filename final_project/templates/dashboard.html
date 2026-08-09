@@ -1,0 +1,450 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    {% if active_vault %}{{ active_vault.name }} | Workspace{% else %}Personal Vault | Dashboard{% endif %}
+{% endblock %}
+
+{% block content %}
+<!-- Workspace Header -->
+<div class="workspace-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+    <div class="workspace-title-area">
+        <h1 style="font-size: 2rem; font-weight: 700;">
+            {% if active_vault %}
+                <i class="fas fa-users-viewfinder" style="color: #3e92cc;"></i> {{ active_vault.name }} Workspace
+            {% else %}
+                <i class="fas fa-user-shield" style="color: #27ae60;"></i> My Personal Vault
+            {% endif %}
+        </h1>
+        <p class="text-muted" style="font-size: 0.9rem; margin-bottom: 10px;">
+            {% if active_vault %}
+                Collaborative space shared with your team.
+            {% else %}
+                Your private contacts, visible only to you.
+            {% endif %}
+        </p>
+        
+        {% if members %}
+        <div class="team-members" style="display: flex; align-items: center; gap: 8px;">
+            <span style="font-size: 0.75rem; font-weight: 700; color: #999; text-transform: uppercase; margin-right: 5px;">Active Team:</span>
+            <div class="member-avatars" style="display: flex; -webkit-mask-image: linear-gradient(to right, black 80%, transparent 100%);">
+                {% for member in members %}
+                <div class="mini-avatar" title="{{ member.username }}" data-name="{{ member.username }}" 
+                     style="width: 28px; height: 28px; border-radius: 50%; background: #eee; border: 2px solid #fff; margin-left: -8px; font-size: 0.65rem; display: flex; align-items: center; justify-content: center; font-weight: 700; color: #fff;">
+                    <!-- Initials by JS -->
+                </div>
+                {% endfor %}
+            </div>
+            <span style="font-size: 0.8rem; color: #666; margin-left: 5px;">{{ members|length }} Members</span>
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="workspace-actions">
+        {% if active_vault %}
+            <button onclick="showInviteModal('{{ active_vault.name }}', '{{ active_vault.invite_code }}')" class="btn-hub-secondary">
+                <i class="fas fa-qrcode"></i> Invite Others
+            </button>
+        {% else %}
+            <button onclick="toggleModal('createGroupModal')" class="btn-hub-primary">
+                <i class="fas fa-plus-circle"></i> New Vault
+            </button>
+            <button onclick="toggleModal('joinGroupModal')" class="btn-hub-secondary">
+                <i class="fas fa-key"></i> Join Vault
+            </button>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Local Stats -->
+<div class="stats-container">
+    <div class="stat-card">
+        <div class="stat-icon" style="background: {% if active_vault %}#f0f7ff{% else %}#e8f5e9{% endif %}; color: {% if active_vault %}#3e92cc{% else %}#2e7d32{% endif %};">
+            <i class="fas fa-address-book"></i>
+        </div>
+        <div class="stat-info">
+            <h3>{{ stats.total_contacts }}</h3>
+            <p>Vault Size</p>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon"><i class="fas fa-chart-pie"></i></div>
+        <div class="stat-info">
+            <h3>{{ stats.cat_stats|length }}</h3>
+            <p>Categories</p>
+        </div>
+    </div>
+    {% if active_vault %}
+    <div class="stat-card">
+        <div class="stat-icon" style="background: #fff3e0; color: #ef6c00;"><i class="fas fa-id-card-clip"></i></div>
+        <div class="stat-info">
+            <h3>{{ active_vault.invite_code }}</h3>
+            <p>Access Code</p>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<div class="dashboard-header">
+    <div class="search-wrapper">
+        <div class="search-box">
+            <i class="fas fa-search"></i>
+            <input type="text" id="smartSearch" placeholder="Search in this workspace..." onkeyup="filterContacts()">
+            <button class="btn-voice" id="voiceSearchBtn" title="Search by Voice">
+                <i class="fas fa-microphone"></i>
+            </button>
+        </div>
+    </div>
+    <div class="action-buttons">
+        <button onclick="toggleModal('addModal')" class="btn-add" style="background: {% if active_vault %}#3e92cc{% else %}#000{% endif %};">
+            <i class="fas fa-plus"></i> Add Contact
+        </button>
+    </div>
+</div>
+
+{% if not contacts %}
+    <div style="text-align: center; padding: 100px 0; background: #fff; border-radius: 20px; border: 1px dashed #ddd;">
+        <i class="fas fa-folder-open" style="font-size: 4rem; opacity: 0.05; margin-bottom: 20px;"></i>
+        <h3>Workspace is empty</h3>
+        <p class="text-muted">Start building your network in this {% if active_vault %}shared{% else %}private{% endif %} vault.</p>
+    </div>
+{% else %}
+    <div class="contacts-grid" id="contactsGrid">
+        {% for contact in contacts %}
+            <div class="contact-card tag-{{ contact.category.lower() }}" data-search="{{ contact.name.lower() }} {{ contact.email.lower() }} {{ contact.category.lower() }}">
+                <div class="contact-header">
+                    <div class="contact-avatar" data-name="{{ contact.name }}">
+                        <!-- Initials will be injected here -->
+                    </div>
+                    <div class="contact-name-wrapper">
+                        <span class="contact-category">{{ contact.category }}</span>
+                        <h3 class="contact-name">{{ contact.name }}</h3>
+                    </div>
+                </div>
+                
+                <div class="contact-info">
+                    <div class="info-item">
+                        <i class="fas fa-phone"></i>
+                        <span>{{ contact.phone }}</span>
+                    </div>
+                    {% if contact.email %}
+                    <div class="info-item">
+                        <i class="far fa-envelope"></i>
+                        <span>{{ contact.email }}</span>
+                    </div>
+                    {% endif %}
+                    <div class="info-item" style="margin-top: 10px; font-size: 0.8rem; color: #888;">
+                        <i class="fas fa-user-tag"></i>
+                        {% if active_vault %}
+                            <span>Member: {{ 'You' if contact.user_id == session.user_id else contact.owner_name }}</span>
+                        {% else %}
+                            <span>Private Lock <i class="fas fa-lock"></i></span>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="contact-actions">
+                    <div style="display: flex; gap: 10px;">
+                        <button onclick="openEditModal('{{ contact.id }}', '{{ contact.name }}', '{{ contact.phone }}', '{{ contact.email }}', '{{ contact.category }}')" class="btn-icon edit" title="Edit">
+                            <i class="fas fa-pen-to-square"></i>
+                        </button>
+                        <a href="{{ url_for('contacts.delete_contact', id=contact.id) }}" class="btn-icon delete" title="Delete" onclick="return confirm('Delete this contact permanently?')">
+                            <i class="fas fa-trash-can"></i>
+                        </a>
+                    </div>
+                    <button class="btn-speak" onclick="speakContact('{{ contact.name }}', '{{ contact.phone }}', '{{ contact.category }}')" title="AI Readout">
+                        <i class="fas fa-volume-up"></i>
+                    </button>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
+
+<!-- Create Group Modal -->
+<div id="createGroupModal" class="modal">
+    <div class="modal-content">
+        <span class="modal-close" onclick="toggleModal('createGroupModal')">&times;</span>
+        <div class="auth-header" style="text-align: left; margin-bottom: 25px;">
+            <h2>Create New Workspace</h2>
+            <p>Build a shared space for your team.</p>
+        </div>
+        <form action="{{ url_for('groups.create_group') }}" method="POST">
+            <div class="form-group">
+                <label>Vault Name</label>
+                <input type="text" name="group_name" required placeholder="e.g. Sales Team">
+            </div>
+            <button type="submit" class="btn-primary">Generate Code</button>
+        </form>
+    </div>
+</div>
+
+<!-- Join Group Modal -->
+<div id="joinGroupModal" class="modal">
+    <div class="modal-content">
+        <span class="modal-close" onclick="toggleModal('joinGroupModal')">&times;</span>
+        <div class="auth-header" style="text-align: left; margin-bottom: 25px;">
+            <h2>Join a Workspace</h2>
+            <p>Access a shared group via invite code.</p>
+        </div>
+        <form action="{{ url_for('groups.join_group') }}" method="POST">
+            <div class="form-group">
+                <label>Invite Code</label>
+                <input type="text" name="invite_code" required placeholder="XXXXXX" style="text-transform: uppercase;">
+            </div>
+            <button type="submit" class="btn-primary">Join Now</button>
+        </form>
+    </div>
+</div>
+
+<!-- Invite Info Modal -->
+<div id="inviteModal" class="modal">
+    <div class="modal-content" style="text-align: center;">
+        <span class="modal-close" onclick="toggleModal('inviteModal')">&times;</span>
+        <h2 id="invGroupName">Vault Name</h2>
+        <p class="text-muted">Invite your team to this workspace</p>
+        <div class="invite-code-display" id="invCodeDisplay">XXXXXX</div>
+        <div class="qr-container" style="margin: 20px 0;">
+            <img id="qrCodeImg" src="" alt="QR Code" style="width: 180px; border-radius: 12px;">
+        </div>
+        <div style="display: flex; gap: 10px; justify-content: center;">
+            <button onclick="copyToClipboard()" class="btn-hub-secondary"><i class="fas fa-copy"></i> Copy</button>
+            <a id="gmailInviteBtn" href="#" class="btn-hub-primary" style="background: #ea4335;"><i class="fab fa-google"></i> Gmail</a>
+        </div>
+    </div>
+</div>
+
+<!-- Add Contact Modal -->
+<div id="addModal" class="modal">
+    <div class="modal-content">
+        <span class="modal-close" onclick="toggleModal('addModal')">&times;</span>
+        <div class="auth-header" style="text-align: left; margin-bottom: 25px;">
+            <h2>Add to {% if active_vault %}{{ active_vault.name }}{% else %}Personal{% endif %}</h2>
+        </div>
+        <form action="{{ url_for('contacts.add_contact') }}" method="POST">
+            <!-- Hidden context field -->
+            <input type="hidden" name="shared_group_id" value="{{ active_vault.id if active_vault else '' }}">
+            
+            <div class="form-group">
+                <label>Full Name</label>
+                <input type="text" name="name" required>
+            </div>
+            <div class="form-group">
+                <label>Phone Number</label>
+                <input type="tel" name="phone" required>
+            </div>
+            <div class="form-group">
+                <label>Email Address</label>
+                <input type="email" name="email">
+            </div>
+            <div class="form-group">
+                <label>Category</label>
+                <select name="group">
+                    <option value="Friends">Friends</option>
+                    <option value="Family">Family</option>
+                    <option value="Work">Work</option>
+                    <option value="Other" selected>Other</option>
+                </select>
+            </div>
+            <button type="submit" class="btn-primary" style="background: {% if active_vault %}#3e92cc{% else %}#000{% endif %};">Save to Vault</button>
+        </form>
+    </div>
+</div>
+
+<!-- Edit Contact Modal -->
+<div id="editModal" class="modal">
+    <div class="modal-content">
+        <span class="modal-close" onclick="toggleModal('editModal')">&times;</span>
+        <div class="auth-header" style="text-align: left; margin-bottom: 25px;">
+            <h2>Update Contact</h2>
+        </div>
+        <form id="editForm" method="POST">
+            <input type="hidden" name="shared_group_id" value="{{ active_vault.id if active_vault else '' }}">
+            <div class="form-group">
+                <label>Full Name</label>
+                <input type="text" id="edit_name" name="name" required>
+            </div>
+            <div class="form-group">
+                <label>Phone Number</label>
+                <input type="tel" id="edit_phone" name="phone" required>
+            </div>
+            <div class="form-group">
+                <label>Email Address</label>
+                <input type="email" id="edit_email" name="email">
+            </div>
+            <div class="form-group">
+                <label>Category</label>
+                <select id="edit_group" name="group">
+                    <option value="Friends">Friends</option>
+                    <option value="Family">Family</option>
+                    <option value="Work">Work</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+            <button type="submit" class="btn-primary">Update and Sync</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    // Global Avatar Init with Safety Check
+    function initAvatars() {
+        const avatars = document.querySelectorAll('.contact-avatar, .mini-avatar');
+        if (!avatars.length) return;
+        
+        avatars.forEach(avatar => {
+            const name = avatar.getAttribute('data-name');
+            if (!name) return;
+            
+            const initials = name.split(' ').filter(n => n).map(n => n[0]).join('').toUpperCase().substring(0, 2);
+            avatar.innerText = initials || '?';
+            
+            const colors = ['#3e92cc', '#27ae60', '#f39c12', '#9b59b6', '#e67e22', '#2c3e50'];
+            // Consistency: use name to seed the color so same user gets same color
+            let charCodeSum = 0;
+            for (let i = 0; i < name.length; i++) charCodeSum += name.charCodeAt(i);
+            avatar.style.background = colors[charCodeSum % colors.length];
+        });
+    }
+    initAvatars();
+
+    function toggleModal(modalId) {
+        const modal = document.getElementById(modalId);
+        if (modal) {
+            modal.classList.toggle('active');
+            // Prevent body scroll when modal is open
+            document.body.style.overflow = modal.classList.contains('active') ? 'hidden' : 'auto';
+        }
+    }
+
+    function showInviteModal(name, code) {
+        const groupEl = document.getElementById('invGroupName');
+        const codeEl = document.getElementById('invCodeDisplay');
+        const qrEl = document.getElementById('qrCodeImg');
+        
+        if (groupEl) groupEl.innerText = name;
+        if (codeEl) codeEl.innerText = code;
+        if (qrEl) qrEl.src = `https://quickchart.io/qr?text=${code}&size=200`;
+        
+        const base_url = window.location.origin;
+        const subject = encodeURIComponent(`Join my Shared Vault: ${name}`);
+        const body = encodeURIComponent(`Hi! Join my collaborative contact vault on CMS using the code: ${code}\n\nJoin here: ${base_url}`);
+        const gmailBtn = document.getElementById('gmailInviteBtn');
+        if (gmailBtn) gmailBtn.href = `mailto:?subject=${subject}&body=${body}`;
+        
+        toggleModal('inviteModal');
+    }
+
+    function copyToClipboard() {
+        const codeEl = document.getElementById('invCodeDisplay');
+        if (!codeEl) return;
+        const code = codeEl.innerText;
+        navigator.clipboard.writeText(code).then(() => {
+            alert('Code Copied!');
+        });
+    }
+
+    function openEditModal(id, name, phone, email, group) {
+        const form = document.getElementById('editForm');
+        if (!form) return;
+        
+        form.action = `/dashboard/edit/${id}`;
+        if (document.getElementById('edit_name')) document.getElementById('edit_name').value = name;
+        if (document.getElementById('edit_phone')) document.getElementById('edit_phone').value = phone;
+        if (document.getElementById('edit_email')) document.getElementById('edit_email').value = email;
+        if (document.getElementById('edit_group')) document.getElementById('edit_group').value = group;
+        
+        toggleModal('editModal');
+    }
+
+    function filterContacts() {
+        const searchTerm = document.getElementById('smartSearch').value.toLowerCase();
+        document.querySelectorAll('.contact-card').forEach(card => {
+            const searchText = card.getAttribute('data-search');
+            card.style.display = searchText.includes(searchTerm) ? 'flex' : 'none';
+        });
+    }
+
+    // AI Voice Assistant
+    function speakContact(name, phone, group) {
+        window.speechSynthesis.cancel();
+        const text = `Contact, ${name}. Category, ${group}. Phone, ${phone.split('').join(' ')}.`;
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.rate = 0.95;
+        window.speechSynthesis.speak(utterance);
+    }
+
+    const voiceBtn = document.getElementById('voiceSearchBtn');
+    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        const recognition = new SpeechRecognition();
+
+        recognition.continuous    = false;   // auto-stop after one phrase
+        recognition.interimResults = false;  // only final result
+        recognition.lang           = 'en-US';
+
+        let isListening = false;
+        let isStarting  = false;            // guard against rapid double-clicks
+
+        /* ── helpers ── */
+        function setUI(listening) {
+            isListening = listening;
+            isStarting  = false;
+            voiceBtn.classList.toggle('listening', listening);
+            voiceBtn.title = listening ? 'Click to stop listening' : 'Search by Voice';
+            voiceBtn.querySelector('i').className = listening
+                ? 'fas fa-stop-circle'   // show stop icon while active
+                : 'fas fa-microphone';
+        }
+
+        /* ── lifecycle events ── */
+        recognition.onstart  = () => setUI(true);
+
+        recognition.onresult = (event) => {
+            const raw      = event.results[0][0].transcript.toLowerCase().trim();
+            const query    = raw
+                .replace(/^(search\s+for\s+|find\s+|show\s+me\s+|look\s+up\s+)/i, '')
+                .trim();
+            const searchEl = document.getElementById('smartSearch');
+            if (searchEl) {
+                searchEl.value = query;
+                filterContacts();
+            }
+        };
+
+        recognition.onend   = () => setUI(false);
+
+        recognition.onerror = (event) => {
+            setUI(false);
+            if (event.error === 'not-allowed' || event.error === 'permission-denied') {
+                alert('⚠️ Microphone access denied.\nPlease allow mic permission in your browser and try again.');
+            } else if (event.error === 'no-speech') {
+                // silent — user just didn't say anything
+            } else if (event.error !== 'aborted') {
+                console.warn('Voice recognition error:', event.error);
+            }
+        };
+
+        /* ── toggle button ── */
+        voiceBtn.addEventListener('click', () => {
+            if (isStarting) return;          // ignore rapid clicks during init
+            if (isListening) {
+                recognition.stop();
+            } else {
+                isStarting = true;
+                try {
+                    recognition.start();
+                } catch (err) {
+                    isStarting = false;
+                    console.warn('Could not start mic:', err.message);
+                }
+            }
+        });
+
+    } else {
+        // Browser doesn't support Speech Recognition — hide the button
+        if (voiceBtn) voiceBtn.style.display = 'none';
+    }
+
+    window.onclick = (e) => { if (e.target.classList.contains('modal')) e.target.classList.remove('active'); }
+</script>
+{% endblock %}

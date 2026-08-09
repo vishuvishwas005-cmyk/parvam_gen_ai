@@ -1,0 +1,29 @@
+{% extends "layout.html" %}
+
+{% block title %}Register | CMS{% endblock %}
+
+{% block content %}
+<div class="auth-card">
+    <div class="auth-header">
+        <h1>Create Account</h1>
+        <p>Join the Contact Management System.</p>
+    </div>
+
+    <form action="{{ url_for('auth.register') }}" method="POST">
+        <div class="form-group">
+            <label for="username">Choose Username</label>
+            <input type="text" id="username" name="username" placeholder="e.g. johndoe" required autocomplete="username">
+        </div>
+        <div class="form-group">
+            <label for="password">Create Password</label>
+            <input type="password" id="password" name="password" placeholder="Min. 8 characters" required autocomplete="new-password">
+        </div>
+        <button type="submit" class="btn-primary">Register Now</button>
+    </form>
+
+    <div class="auth-footer">
+        <p>Already have an account? <a href="{{ url_for('auth.login') }}">Login here</a></p>
+        <p style="margin-top: 15px;"><a href="/" style="font-weight: 400; font-size: 0.85rem;">&larr; Back to Landing Page</a></p>
+    </div>
+</div>
+{% endblock %}

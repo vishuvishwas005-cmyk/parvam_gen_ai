@@ -1,0 +1,29 @@
+{% extends "layout.html" %}
+
+{% block title %}Login | CMS{% endblock %}
+
+{% block content %}
+<div class="auth-card">
+    <div class="auth-header">
+        <h1>Welcome Back</h1>
+        <p>Please enter your credentials to login.</p>
+    </div>
+
+    <form action="{{ url_for('auth.login') }}" method="POST">
+        <div class="form-group">
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username" placeholder="Enter your username" required autocomplete="username">
+        </div>
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" placeholder="Enter your password" required autocomplete="current-password">
+        </div>
+        <button type="submit" class="btn-primary">Login to Account</button>
+    </form>
+
+    <div class="auth-footer">
+        <p>Don't have an account? <a href="{{ url_for('auth.register') }}">Create Account</a></p>
+        <p style="margin-top: 15px;"><a href="/" style="font-weight: 400; font-size: 0.85rem;">&larr; Back to Landing Page</a></p>
+    </div>
+</div>
+{% endblock %}
